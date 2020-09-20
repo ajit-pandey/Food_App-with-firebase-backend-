@@ -17,4 +17,32 @@ class FeaturedServices{
   return featured;
 
   });
+
+  Future<List<FeaturedModel>> getFeaturedofCategory({String category}) async =>
+   _firestore.collection(collection).where("category", isEqualTo: category).
+  getDocuments().
+  then((result)
+  {
+    List<FeaturedModel> featured = [];
+  for(DocumentSnapshot category in result.documents){
+    featured.add(FeaturedModel.fromSnapshot(category));
+
+  }
+  return featured;
+
+  });
+
+  Future<List<FeaturedModel>> getProductsByRestautant({int id}) async =>
+   _firestore.collection(collection).where("restaurantId", isEqualTo: id).
+  getDocuments().
+  then((result)
+  {
+    List<FeaturedModel> featured = [];
+  for(DocumentSnapshot category in result.documents){
+    featured.add(FeaturedModel.fromSnapshot(category));
+
+  }
+  return featured;
+
+  });
 }

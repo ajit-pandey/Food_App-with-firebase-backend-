@@ -7,7 +7,9 @@ import 'package:food_course/scr/providers/featured.dart';
 import 'package:food_course/scr/providers/restaurant.dart';
 import 'package:food_course/scr/providers/user.dart';
 import 'package:food_course/scr/screens/bag.dart';
+import 'package:food_course/scr/screens/category.dart';
 import 'package:food_course/scr/screens/details.dart';
+import 'package:food_course/scr/screens/featured.dart';
 import 'package:food_course/scr/widgets/bottom_navigation_items.dart';
 import 'package:food_course/scr/widgets/categories.dart';
 import 'package:food_course/scr/widgets/featured_products.dart';
@@ -174,8 +176,15 @@ class _HomeState extends State<Home> {
                 scrollDirection: Axis.horizontal,
                 itemCount: categoryProvider.categories.length,
                 itemBuilder: (context, index) {
-                  return CategoryWidget(
-                      category: categoryProvider.categories[index]);
+                  return GestureDetector(
+                    onTap: () async{
+                      print("AJit");
+                      await featuredProvider.loadFeaturedByCategory(categoryName:categoryProvider.categories[index].name);
+                      changeScreen(context, CategoryScreen(categoryModel: categoryProvider.categories[index],));
+                    },
+                                      child: CategoryWidget(
+                        category: categoryProvider.categories[index]),
+                  );
                 },
               ),
             ),
@@ -207,6 +216,7 @@ class _HomeState extends State<Home> {
                   itemBuilder: (_, index) {
                     return GestureDetector(
                       onTap: (){
+                        featuredProvider.loadFeaturedByCategory();
                         changeScreen(_, Details(product: featuredProvider.featured[index]));
                       },
                                           child: FeaturedWidget(
@@ -228,7 +238,10 @@ class _HomeState extends State<Home> {
               children:
                 restaurantProvider.restaurants
                 .map((item) => GestureDetector(
-                  onTap: (){},
+                  onTap: ()async {
+                    await featuredProvider.loadFeaturedByRestaurant(restaurantId:item.id);
+                    changeScreen(context, FeaturedScreen(featuredModel: item,));
+                  },
                   child: RestaurantWidget(restaurant:item),
                 ))
                 .toList()
